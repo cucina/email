@@ -1,2 +1,2 @@
 # email
-Simple mocroservice to send formatted email using FreeMarker templates
+Simple microservice to send formatted email using FreeMarker templates
