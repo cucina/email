@@ -1,0 +1,68 @@
+swagger: '2.0'
+info:
+  title: Email Service
+  description: Email service
+  version: #version#
+schemes:
+  - https
+produces:
+  - application/json
+basePath: /email/v1
+paths:
+  /template:
+    post:
+      summary: Create new template
+      operationId: createTemplate
+      parameters:
+      - name: name
+        in: formData
+        required: true
+        description: template name
+        type: string
+      - name: locale
+        in: formData
+        description: Locale of the template
+        type: string
+      - name: file
+        in: formData
+        required: true
+        description: the body of template
+        type: file 
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: User Error
+        '500':
+          description: Unexpected error
+    get:
+      summary: Get template
+      operationId: getTemplate
+      parameters:
+      - name: name
+        in: query
+        required: true
+      - name: locale
+        in: query
+        required: false
+      responses:
+        '200':
+          description: Success
+          schema: 
+            $ref: '#/definitions/Template'
+        '400':
+          description: User Error
+        '500':
+          description: Unexpected error
+
+definitions:
+  Template:
+    type: object
+    properties:
+      body:
+        type: string
+      name:
+        type: string
+      locale:
+        type: string
+          
