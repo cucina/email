@@ -21,7 +21,6 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>3.3.2</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-collections</groupId>
@@ -42,45 +41,45 @@
 			</exclusions>
 		</dependency>
 		<!-- http://mvnrepository.com/artifact/org.springframework.boot/spring-boot -->
-		<dependency>
+<!-- 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot</artifactId>
 			<version>1.3.5.RELEASE</version>
 		</dependency>
-		<!-- http://mvnrepository.com/artifact/org.springframework.boot/spring-boot-autoconfigure -->
-		<dependency>
+ -->		<!-- http://mvnrepository.com/artifact/org.springframework.boot/spring-boot-autoconfigure -->
+<!-- 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-autoconfigure</artifactId>
 			<version>1.3.5.RELEASE</version>
 		</dependency>
-		<!-- http://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter -->
+ -->		<!-- http://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
-			<version>1.3.5.RELEASE</version>
+			<artifactId>spring-boot-starter</artifactId> 
 		</dependency>
 		<!-- http://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
-			<version>1.3.5.RELEASE</version>
 		</dependency>
-
+		<!-- http://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
-			<version>1.3.5.RELEASE</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
-			<version>1.3.5.RELEASE</version>
 		</dependency>
-		<dependency>
+<!-- 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
 		</dependency>
-		<dependency>
+ -->		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-jms</artifactId>
 		</dependency>
@@ -89,19 +88,17 @@
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>
-			<version>2.4.0</version>
 		</dependency>
 		<!-- http://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui -->
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger-ui</artifactId>
-			<version>2.4.0</version>
 		</dependency>
 		<!-- http://mvnrepository.com/artifact/de.flapdoodle.embed/de.flapdoodle.embed.mongo -->
 		<dependency>
 			<groupId>de.flapdoodle.embed</groupId>
 			<artifactId>de.flapdoodle.embed.mongo</artifactId>
-			<version>1.50.5</version>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>
@@ -111,6 +108,7 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>1.3.5.RELEASE</version>
 				<configuration>
 					<mainClass>org.cucina.email.Application</mainClass>
 				</configuration>
@@ -144,7 +142,7 @@
 							<goal>generate</goal>
 						</goals>
 						<configuration>
-							<inputSpec>src/main/resources/email.yml</inputSpec>
+							<inputSpec>${project.parent.basedir}/src/main/resources/email.yml</inputSpec>
 							<language>springBoot</language>
 							<library>j8-async</library>
 							<modelPackage>${rootPackage}.model</modelPackage>
