@@ -13,6 +13,8 @@ paths:
     post:
       summary: Create new template
       operationId: createTemplate
+      consumes: 
+      - multipart/form-data
       parameters:
       - name: name
         in: formData
@@ -42,9 +44,11 @@ paths:
       - name: name
         in: query
         required: true
+        type: string
       - name: locale
         in: query
         required: false
+        type: string
       responses:
         '200':
           description: Success
