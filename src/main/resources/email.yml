@@ -58,7 +58,23 @@ paths:
           description: User Error
         '500':
           description: Unexpected error
-
+  /send:
+    post:
+      summary: Send email
+      operationId: sendEmail
+      parameters:
+      - name: emailDescriptor
+        in: body
+        schema:
+          $ref: '#/definitions/EmailDescriptor'
+      responses:
+        '202':
+          description: Accepted
+        '400':
+          description: User Error
+        '500':
+          description: Unexpected error
+            
 definitions:
   Template:
     type: object
@@ -69,4 +85,38 @@ definitions:
         type: string
       locale:
         type: string
-          
+  EmailDescriptor:
+    type: object
+    properties:
+      subject:
+        type: string
+      to:
+        type: array
+        items:
+          type: string
+      cc:
+        type: array
+        items:
+          type: string
+      bcc: 
+        type: array
+        items:
+          type: string
+      from: 
+        type: string
+      messageKey: 
+        type: string
+        required: true
+      locale: 
+        type: string
+      parameters:
+        type: array
+        items:
+          $ref: '#/definitions/NameValuePair'
+  NameValuePair:
+    type: object
+    properties:
+      name:
+        type: string
+      value:
+        type: string

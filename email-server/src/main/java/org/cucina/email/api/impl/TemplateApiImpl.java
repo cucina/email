@@ -1,4 +1,4 @@
-package org.cucina.email.service;
+package org.cucina.email.api.impl;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -18,6 +18,7 @@ import org.cucina.email.api.TemplateApi;
 import org.cucina.email.model.Template;
 import org.cucina.email.repository.EmailTemplate;
 import org.cucina.email.repository.TemplateRepository;
+import org.cucina.email.service.MimeMessagePreparatorFactory;
 
 @Component
 public class TemplateApiImpl implements TemplateApi {

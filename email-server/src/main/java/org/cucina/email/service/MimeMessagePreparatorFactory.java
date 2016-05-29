@@ -16,96 +16,95 @@ import org.springframework.stereotype.Component;
 
 import freemarker.template.Configuration;
 
-
 /**
  * JAVADOC for Class Level
  *
  * @author $Author: $
  * @version $Revision: $
-  */
+ */
 @Component
 public class MimeMessagePreparatorFactory {
-    /** ftl. */
-    public static final String TEMPLATE_SUFFIX = ".ftl";
-    private Configuration configuration;
+	/** ftl. */
+	public static final String TEMPLATE_SUFFIX = ".ftl";
 
-    // Injected parameter map containing standard info for the email 
-    private Map<String, String> standardParams;
-    private String suffix = TEMPLATE_SUFFIX;
+	private Configuration configuration;
 
-    /**
-     * @param configuration
-     *            The configuration to set.
-     */
-    @Required
-    @Autowired
-    public void setConfiguration(Configuration configuration) {
-        this.configuration = configuration;
-    }
+	// Injected parameter map containing standard info for the email
+	private Map<String, String> standardParams;
 
-    /**
-     * JAVADOC Method Level Comments
-     *
-     * @param templateName JAVADOC.
-     * @param params JAVADOC.
-     * @param locale JAVADOC.
-     * @param tos JAVADOC.
-     * @param ccs JAVADOC.
-     * @param bccs JAVADOC.
-     *
-     * @return JAVADOC.
-     */
-    public MimeMessagePreparator getInstance(String templateName, Map<String, Object> params,
-        Locale locale, Collection<?extends EmailUser> tos, Collection<?extends EmailUser> ccs,
-        Collection<?extends EmailUser> bccs, Collection<DataSource> attachments) {
-        if (params == null) {
-            params = new HashMap<String, Object>();
-        }
+	private String suffix = TEMPLATE_SUFFIX;
 
-        if (MapUtils.isNotEmpty(getStandardParams())) {
-            params.putAll(getStandardParams());
-        }
+	/**
+	 * @param configuration The configuration to set.
+	 */
+	@Required
+	@Autowired
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
 
-        MimeMessagePreparatorImpl preparator = new MimeMessagePreparatorImpl();
+	/**
+	 * JAVADOC Method Level Comments
+	 *
+	 * @param templateName JAVADOC.
+	 * @param params JAVADOC.
+	 * @param locale JAVADOC.
+	 * @param tos JAVADOC.
+	 * @param ccs JAVADOC.
+	 * @param bccs JAVADOC.
+	 *
+	 * @return JAVADOC.
+	 */
+	public MimeMessagePreparator getInstance(String templateName, Map<String, String> params,
+			Locale locale, Collection<? extends EmailUser> tos, Collection<? extends EmailUser> ccs,
+			Collection<? extends EmailUser> bccs, Collection<DataSource> attachments) {
+		if (params == null) {
+			params = new HashMap<String, String>();
+		}
 
-        preparator.setTemplateName(templateName);
-        preparator.setConfiguration(configuration);
-        preparator.setParams(params);
-        preparator.setLocale(locale);
-        preparator.setSuffix(suffix);
-        preparator.setTo(tos);
-        preparator.setCc(ccs);
-        preparator.setBcc(bccs);
-        preparator.setAttachments(attachments);
+		if (MapUtils.isNotEmpty(getStandardParams())) {
+			params.putAll(getStandardParams());
+		}
 
-        return preparator;
-    }
+		MimeMessagePreparatorImpl preparator = new MimeMessagePreparatorImpl();
 
-    /**
-     * JAVADOC.
-     *
-     * @param standardParams
-     *            JAVADOC.
-     */
-    public void setStandardParams(Map<String, String> standardParams) {
-        this.standardParams = standardParams;
-    }
+		preparator.setTemplateName(templateName);
+		preparator.setConfiguration(configuration);
+		preparator.setParams(params);
+		preparator.setLocale(locale);
+		preparator.setSuffix(suffix);
+		preparator.setTo(tos);
+		preparator.setCc(ccs);
+		preparator.setBcc(bccs);
+		preparator.setAttachments(attachments);
 
-    /**
-     * JAVADOC.
-     *
-     * @return JAVADOC.
-     */
-    public Map<String, String> getStandardParams() {
-        return standardParams;
-    }
+		return preparator;
+	}
 
-    /**
-     * Set suffix
-     *
-     * @param suffix String
-     */
-    public void setSuffix(String suffix) {
-        this.suffix = suffix;
-    }
+	/**
+	 * JAVADOC.
+	 *
+	 * @param standardParams JAVADOC.
+	 */
+	public void setStandardParams(Map<String, String> standardParams) {
+		this.standardParams = standardParams;
+	}
+
+	/**
+	 * JAVADOC.
+	 *
+	 * @return JAVADOC.
+	 */
+	public Map<String, String> getStandardParams() {
+		return standardParams;
+	}
+
+	/**
+	 * Set suffix
+	 *
+	 * @param suffix String
+	 */
+	public void setSuffix(String suffix) {
+		this.suffix = suffix;
+	}
 }

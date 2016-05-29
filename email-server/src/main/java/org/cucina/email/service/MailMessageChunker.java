@@ -24,19 +24,6 @@ public interface MailMessageChunker {
     void setChunkSize(int chunkSize);
 
     /**
-     *
-     *
-     * @param templateName .
-     * @param params .
-     * @param locale .
-     * @param tos .
-     * @param ccs .
-     * @param bccs .
-     * @param attachments .
-     *
-     * @return .
-     */
-    /**
      * Takes a mail descriptor, locale and collections of recipients and chunks
      * emails, creating message preparators which are used by Java Mail
      * @param templateName - name of template
@@ -47,7 +34,7 @@ public interface MailMessageChunker {
      * @param bccs - bcc recipients
      * @return set of MimeMessagePreparator
      */
-    Set<MimeMessagePreparator> getPreparators(String templateName, Map<String, Object> params,
+    Set<MimeMessagePreparator> getPreparators(String templateName, Map<String, String> params,
         Locale locale, Collection<?extends EmailUser> tos, Collection<?extends EmailUser> ccs,
         Collection<?extends EmailUser> bccs, Collection<DataSource> attachments);
 }

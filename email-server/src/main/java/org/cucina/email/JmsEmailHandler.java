@@ -1,13 +1,11 @@
 package org.cucina.email;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
-import org.cucina.email.service.AbstractEmailHandler;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import org.cucina.email.model.EmailDescriptor;
+import org.cucina.email.service.EmailPreprocessor;
 
 /**
  * Handles JMS text message with body as a JSON document representing EmailDto.
@@ -24,18 +22,17 @@ import org.slf4j.LoggerFactory;
  * @author vlevine $
  */
 @Component
-public class JmsEmailHandler
-    extends AbstractEmailHandler {
-    static final Logger LOG = LoggerFactory.getLogger(JmsEmailHandler.class);
+public class JmsEmailHandler {
+	@Autowired
+	private EmailPreprocessor emailPreprocessor;
 
-    /**
-     * endpoint method
-     *
-     * @param message
-     *            JAVADOC.
-     */
-    @JmsListener(destination = "cucina.email", containerFactory = "myJmsListenerContainerFactory")
-    public void processMessage(EmailDto dto) {
-        sendEmail(dto);
-    }
+	/**
+	 * endpoint method
+	 *
+	 * @param message JAVADOC.
+	 */
+	@JmsListener(destination = "cucina.email", containerFactory = "myJmsListenerContainerFactory")
+	public void processMessage(EmailDescriptor dto) {
+		emailPreprocessor.sendEmail(dto);
+	}
 }

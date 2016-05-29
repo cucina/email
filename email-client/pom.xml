@@ -12,7 +12,6 @@
 		<rootPackage>org.cucina.email.client</rootPackage>
 		<swagger-annotations-version>1.5.8</swagger-annotations-version>
 		<jersey-version>1.18</jersey-version>
-		<jackson-version>2.4.2</jackson-version>
 		<maven-plugin-version>1.0.0</maven-plugin-version>
 	</properties>
 	<build>
@@ -105,8 +104,7 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.jaxrs</groupId>
 			<artifactId>jackson-jaxrs-json-provider</artifactId>
-			<version>${jackson-version}</version>
-		</dependency>
+			</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-joda</artifactId>
@@ -126,8 +124,7 @@
 		<dependency>
 			<groupId>de.flapdoodle.embed</groupId>
 			<artifactId>de.flapdoodle.embed.mongo</artifactId>
-			<version>1.50.5</version>
-		</dependency>
+			</dependency>
 		
 		<dependency>
 			<groupId>cucina</groupId>

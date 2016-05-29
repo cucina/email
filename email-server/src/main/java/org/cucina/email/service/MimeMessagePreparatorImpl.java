@@ -45,7 +45,7 @@ public class MimeMessagePreparatorImpl
     private Collection<?extends EmailUser> to;
     private Configuration configuration;
     private Locale locale;
-    private Map<String, Object> params;
+    private Map<String, String> params;
     private String encoding = "UTF-8";
     private String from;
     private String subject;
@@ -111,7 +111,7 @@ public class MimeMessagePreparatorImpl
      *
      * @param params JAVADOC.
      */
-    public void setParams(Map<String, Object> params) {
+    public void setParams(Map<String, String> params) {
         this.params = params;
     }
 
@@ -286,7 +286,7 @@ public class MimeMessagePreparatorImpl
                                         .append("templateLocation", templateLocation).toString();
     }
 
-    private String constructByLocale(String messageKey, Map<String, Object> parameters,
+    private String constructByLocale(String messageKey, Map<String, String> parameters,
         Locale locale) {
         Assert.notNull(messageKey, "messageKey is null");
         Assert.notNull(locale, "locale is null");

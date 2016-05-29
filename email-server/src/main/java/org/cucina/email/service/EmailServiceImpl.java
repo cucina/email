@@ -65,7 +65,7 @@ public class EmailServiceImpl
     @Override
     public void sendMessages(String subject, String from, Collection<EmailUser> toUsers,
         Collection<EmailUser> ccUsers, Collection<EmailUser> bccUsers, String messageKey,
-        Map<String, Object> parameters, Collection<DataSource> attachments) {
+        Map<String, String> parameters, Collection<DataSource> attachments) {
         MimeMessagePreparator[] preparators = emailConstructor.prepareMessages(messageKey, toUsers,
                 ccUsers, bccUsers, parameters, attachments);
 
@@ -81,10 +81,6 @@ public class EmailServiceImpl
         try {
             javaMailSender.send(preparators);
         } catch (MailSendException e) {
-            // The Spring class SmartMimeMessage is not serializable, which
-            // prevents Mule from being able to insert into the error queue.
-            // Hence we need to handle this exception, which contains a
-            // reference to that class.
             StringBuffer sb = new StringBuffer();
 
             for (int i = 0; i < preparators.length; i++) {

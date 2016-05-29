@@ -75,7 +75,7 @@ public class ConstructEmailServiceImplTest {
         users.add(disabledWithEmailFrench);
         users.add(activeWithoutEmailFrench);
         users.add(disabledWithoutEmailFrench);
-        when(chunker.getPreparators(eq("APOverdue"), eq((Map<String, Object>) null),
+        when(chunker.getPreparators(eq("APOverdue"), eq((Map<String, String>) null),
                 eq(Locale.FRENCH), eq((Collection) null), eq((Collection) null),
                 any(Collection.class), eq((Collection) null)))
             .thenReturn(Collections.singleton(preparator));
@@ -100,7 +100,7 @@ public class ConstructEmailServiceImplTest {
         users.add(activeWithoutEmailFrench);
         users.add(disabledWithoutEmailFrench);
 
-        when(chunker.getPreparators(eq("APOverdue"), eq((Map<String, Object>) null),
+        when(chunker.getPreparators(eq("APOverdue"), eq((Map<String, String>) null),
                 eq(Locale.FRENCH), eq((Collection) null), any(Collection.class),
                 eq((Collection) null), eq((Collection) null)))
             .thenReturn(Collections.singleton(preparator));
@@ -122,11 +122,11 @@ public class ConstructEmailServiceImplTest {
 
         users.add(activeWithEmailFrench);
         users.add(english);
-        when(chunker.getPreparators(eq("APOverdue"), eq((Map<String, Object>) null),
+        when(chunker.getPreparators(eq("APOverdue"), eq((Map<String, String>) null),
                 eq(Locale.FRENCH), any(Collection.class), eq((Collection) null),
                 eq((Collection) null), eq((Collection) null)))
             .thenReturn(Collections.singleton(preparator));
-        when(chunker.getPreparators(eq("APOverdue"), eq((Map<String, Object>) null),
+        when(chunker.getPreparators(eq("APOverdue"), eq((Map<String, String>) null),
                 eq(Locale.ENGLISH), any(Collection.class), eq((Collection) null),
                 eq((Collection) null), eq((Collection) null)))
             .thenReturn(Collections.singleton(mock(MimeMessagePreparator.class)));
@@ -171,7 +171,7 @@ public class ConstructEmailServiceImplTest {
         users.add(disabledWithEmailFrench);
         users.add(activeWithoutEmailFrench);
         users.add(disabledWithoutEmailFrench);
-        when(chunker.getPreparators(eq("APOverdue"), eq((Map<String, Object>) null),
+        when(chunker.getPreparators(eq("APOverdue"), eq((Map<String, String>) null),
                 eq(Locale.FRENCH), any(Collection.class), eq((Collection) null),
                 eq((Collection) null), eq((Collection) null)))
             .thenReturn(Collections.singleton(preparator));

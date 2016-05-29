@@ -24,6 +24,6 @@ public interface EmailConstructor {
     */
     public MimeMessagePreparator[] prepareMessages(String messageKey,
         Collection<EmailUser> toUsers, Collection<EmailUser> ccUsers,
-        Collection<EmailUser> bccUsers, Map<String, Object> parameters,
+        Collection<EmailUser> bccUsers, Map<String, String> parameters,
         Collection<DataSource> attachments);
 }

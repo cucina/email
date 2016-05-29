@@ -22,5 +22,5 @@ public interface EmailService {
     */
     public void sendMessages(String from, String subject, Collection<EmailUser> toUsers,
         Collection<EmailUser> ccUsers, Collection<EmailUser> bccUsers, String messageKey,
-        Map<String, Object> map, Collection<DataSource> attachments);
+        Map<String, String> map, Collection<DataSource> attachments);
 }

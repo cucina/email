@@ -62,7 +62,7 @@ public class MimeMessagePreparatorImplTest {
     public void testAll()
         throws Exception {
         MimeMessagePreparatorImpl preparator = getPreparatorInstance("Test",
-                new HashMap<String, Object>(), Locale.FRANCE, MIME_TYPE, LOCATION, FROM, SUFFIX);
+                new HashMap<String, String>(), Locale.FRANCE, MIME_TYPE, LOCATION, FROM, SUFFIX);
 
         // create users
         Collection<EmailUser> users = new ArrayList<EmailUser>();
@@ -76,7 +76,7 @@ public class MimeMessagePreparatorImplTest {
         preparator.setTo(users);
         preparator.setCc(users);
         preparator.setBcc(users);
-        preparator.setParams(new HashMap<String, Object>());
+        preparator.setParams(new HashMap<String, String>());
 
         MimeMessage message = mock(MimeMessage.class);
 
@@ -191,7 +191,7 @@ public class MimeMessagePreparatorImplTest {
     public void testNoLocale()
         throws Exception {
         MimeMessagePreparatorImpl preparator = getPreparatorInstance("Test",
-                new HashMap<String, Object>(), null, MIME_TYPE, LOCATION, FROM, SUFFIX);
+                new HashMap<String, String>(), null, MIME_TYPE, LOCATION, FROM, SUFFIX);
 
         // create users
         Collection<EmailUser> users = new ArrayList<EmailUser>();
@@ -204,7 +204,7 @@ public class MimeMessagePreparatorImplTest {
         users.add(user2);
         preparator.setTo(users);
 
-        preparator.setParams(new HashMap<String, Object>());
+        preparator.setParams(new HashMap<String, String>());
 
         MimeMessage message = mock(MimeMessage.class);
 
@@ -257,7 +257,7 @@ public class MimeMessagePreparatorImplTest {
     public void testNoToEmailAddress()
         throws Exception {
         MimeMessagePreparatorImpl preparator = getPreparatorInstance("Test",
-                new HashMap<String, Object>(), Locale.FRANCE, MIME_TYPE, LOCATION, FROM, SUFFIX);
+                new HashMap<String, String>(), Locale.FRANCE, MIME_TYPE, LOCATION, FROM, SUFFIX);
 
         // create users
         Collection<EmailUser> users = new ArrayList<EmailUser>();
@@ -285,7 +285,7 @@ public class MimeMessagePreparatorImplTest {
     public void testNoUsers()
         throws Exception {
         MimeMessagePreparatorImpl preparator = getPreparatorInstance("Test",
-                new HashMap<String, Object>(), Locale.FRANCE, MIME_TYPE, LOCATION, FROM, SUFFIX);
+                new HashMap<String, String>(), Locale.FRANCE, MIME_TYPE, LOCATION, FROM, SUFFIX);
 
         MimeMessage message = mock(MimeMessage.class);
 
@@ -302,7 +302,7 @@ public class MimeMessagePreparatorImplTest {
     public void testResolveCorrectMessageEnglish()
         throws Exception {
         MimeMessagePreparatorImpl preparator = getPreparatorInstance("Test",
-                new HashMap<String, Object>(), Locale.ENGLISH, MIME_TYPE, LOCATION, FROM, SUFFIX);
+                new HashMap<String, String>(), Locale.ENGLISH, MIME_TYPE, LOCATION, FROM, SUFFIX);
 
         // create users
         Collection<EmailUser> users = new ArrayList<EmailUser>();
@@ -315,7 +315,7 @@ public class MimeMessagePreparatorImplTest {
         users.add(user2);
         preparator.setTo(users);
 
-        preparator.setParams(new HashMap<String, Object>());
+        preparator.setParams(new HashMap<String, String>());
 
         MimeMessage message = mock(MimeMessage.class);
 
@@ -343,7 +343,7 @@ public class MimeMessagePreparatorImplTest {
     public void testResolveCorrectMessageFrench()
         throws Exception {
         MimeMessagePreparatorImpl preparator = getPreparatorInstance("Test",
-                new HashMap<String, Object>(), Locale.FRANCE, MIME_TYPE, LOCATION, FROM, SUFFIX);
+                new HashMap<String, String>(), Locale.FRANCE, MIME_TYPE, LOCATION, FROM, SUFFIX);
 
         // create users
         Collection<EmailUser> users = new ArrayList<EmailUser>();
@@ -356,7 +356,7 @@ public class MimeMessagePreparatorImplTest {
         users.add(user2);
         preparator.setTo(users);
 
-        preparator.setParams(new HashMap<String, Object>());
+        preparator.setParams(new HashMap<String, String>());
 
         MimeMessage message = mock(MimeMessage.class);
 
@@ -383,7 +383,7 @@ public class MimeMessagePreparatorImplTest {
     public void testResolveDefaultMessageGerman()
         throws Exception {
         MimeMessagePreparatorImpl preparator = getPreparatorInstance("Test",
-                new HashMap<String, Object>(), Locale.GERMAN, MIME_TYPE, LOCATION, FROM, SUFFIX);
+                new HashMap<String, String>(), Locale.GERMAN, MIME_TYPE, LOCATION, FROM, SUFFIX);
 
         // create users
         Collection<EmailUser> users = new ArrayList<EmailUser>();
@@ -396,7 +396,7 @@ public class MimeMessagePreparatorImplTest {
         users.add(user2);
         preparator.setTo(users);
 
-        preparator.setParams(new HashMap<String, Object>());
+        preparator.setParams(new HashMap<String, String>());
 
         MimeMessage message = mock(MimeMessage.class);
 
@@ -423,7 +423,7 @@ public class MimeMessagePreparatorImplTest {
     public void testSunnyDay()
         throws Exception {
         MimeMessagePreparatorImpl preparator = getPreparatorInstance("Test",
-                new HashMap<String, Object>(), Locale.FRANCE, MIME_TYPE, LOCATION, FROM, SUFFIX);
+                new HashMap<String, String>(), Locale.FRANCE, MIME_TYPE, LOCATION, FROM, SUFFIX);
 
         // create users
         Collection<EmailUser> users = new ArrayList<EmailUser>();
@@ -435,7 +435,7 @@ public class MimeMessagePreparatorImplTest {
 
         users.add(user2);
         preparator.setTo(users);
-        preparator.setParams(new HashMap<String, Object>());
+        preparator.setParams(new HashMap<String, String>());
 
         MimeMessage message = mock(MimeMessage.class);
 
@@ -467,9 +467,9 @@ public class MimeMessagePreparatorImplTest {
 
         datasources.add(ds);
 
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, String> params = new HashMap<String, String>();
 
-        params.put("ObjectID", new Long(12345));
+        params.put("ObjectID", "12345");
         params.put("URL", "http://cucina.org");
 
         MimeMessagePreparatorImpl preparator = getPreparatorInstance("Test", params, Locale.FRANCE,
@@ -559,7 +559,7 @@ public class MimeMessagePreparatorImplTest {
 
         preparator.setLocale(Locale.FRANCE);
         preparator.setTemplateName("Test");
-        preparator.setParams(new HashMap<String, Object>());
+        preparator.setParams(new HashMap<String, String>());
 
         // create users
         Collection<EmailUser> users = new ArrayList<EmailUser>();
@@ -599,7 +599,7 @@ public class MimeMessagePreparatorImplTest {
     }
 
     private MimeMessagePreparatorImpl getPreparatorInstance(String templateName,
-        Map<String, Object> params, Locale locale, String mimeType, String templateLocation,
+        Map<String, String> params, Locale locale, String mimeType, String templateLocation,
         String from, String suffix)
         throws Exception {
         MimeMessagePreparatorImpl preparator = new MimeMessagePreparatorImpl();

@@ -20,227 +20,215 @@ import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Handles chunking of mail recipients to avoid issues with mail server
  * limitation on number of addressees.
  *
  */
 @Component
-public class MailMessageChunkerImpl
-    implements MailMessageChunker {
-    private static final Logger LOG = LoggerFactory.getLogger(MailMessageChunkerImpl.class);
-    @Autowired
-    private MimeMessagePreparatorFactory messagePreparatorFactory;
-    private int chunkSize = 100;
+public class MailMessageChunkerImpl implements MailMessageChunker {
+	private static final Logger LOG = LoggerFactory.getLogger(MailMessageChunkerImpl.class);
 
-    /**
-     * JAVADOC Method Level Comments
-     *
-     * @param chunkSize
-     *            JAVADOC.
-     */
-    public void setChunkSize(int chunkSize) {
-        this.chunkSize = chunkSize;
-    }
+	@Autowired
+	private MimeMessagePreparatorFactory messagePreparatorFactory;
 
-    /**
-     * JAVADOC Method Level Comments
-     *
-     * @param messagePreparatorFactory
-     *            JAVADOC.
-     */
-    public void setMessagePreparatorFactory(MimeMessagePreparatorFactory messagePreparatorFactory) {
-        this.messagePreparatorFactory = messagePreparatorFactory;
-    }
+	private int chunkSize = 100;
 
-    /**
-     * Returns MimeMessagePreparator instances for the different locales and
-     * possibly chunks the email into separate ones
-     *
-     * @param descriptor
-     *            encapsulates email.
-     * @param locale
-     *            current locale.
-     * @param tos
-     *            to recipients.
-     * @param ccs
-     *            cc recipients.
-     * @param bccs
-     *            bcc recipients.
-     * @param csEmail
-     *            direct tos (not User objects).
-     *
-     * @return a set of MimeMessagePreparator objects ready to be sent.
-     */
-    public Set<MimeMessagePreparator> getPreparators(String templateName,
-        Map<String, Object> params, Locale locale, Collection<?extends EmailUser> tos,
-        Collection<?extends EmailUser> ccs, Collection<?extends EmailUser> bccs,
-        Collection<DataSource> attachments) {
-        Set<MimeMessagePreparator> preparators = new HashSet<MimeMessagePreparator>();
-        int totalRecipients = getTotal(locale, tos, ccs, bccs);
+	/**
+	 * JAVADOC Method Level Comments
+	 *
+	 * @param chunkSize JAVADOC.
+	 */
+	public void setChunkSize(int chunkSize) {
+		this.chunkSize = chunkSize;
+	}
 
-        if (totalRecipients <= chunkSize) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("Total recipients is less than the size at which recipients " +
-                    "must be separated out");
-            }
+	/**
+	 * JAVADOC Method Level Comments
+	 *
+	 * @param messagePreparatorFactory JAVADOC.
+	 */
+	public void setMessagePreparatorFactory(MimeMessagePreparatorFactory messagePreparatorFactory) {
+		this.messagePreparatorFactory = messagePreparatorFactory;
+	}
 
-            preparators.add(messagePreparatorFactory.getInstance(templateName, params, locale, tos,
-                    ccs, bccs, attachments));
-        } else {
-            if (LOG.isInfoEnabled()) {
-                LOG.info("Total recipients is [" + totalRecipients +
-                    "] which exceeds the chunking size [" + chunkSize +
-                    "]. Splitting emails to ensure no SMTP errors");
-            }
+	/**
+	 * Returns MimeMessagePreparator instances for the different locales and
+	 * possibly chunks the email into separate ones
+	 *
+	 * @param descriptor encapsulates email.
+	 * @param locale current locale.
+	 * @param tos to recipients.
+	 * @param ccs cc recipients.
+	 * @param bccs bcc recipients.
+	 * @param csEmail direct tos (not User objects).
+	 *
+	 * @return a set of MimeMessagePreparator objects ready to be sent.
+	 */
+	public Set<MimeMessagePreparator> getPreparators(String templateName,
+			Map<String, String> params, Locale locale, Collection<? extends EmailUser> tos,
+			Collection<? extends EmailUser> ccs, Collection<? extends EmailUser> bccs,
+			Collection<DataSource> attachments) {
+		Set<MimeMessagePreparator> preparators = new HashSet<MimeMessagePreparator>();
+		int totalRecipients = getTotal(locale, tos, ccs, bccs);
 
-            preparators.addAll(chunkPreparators(templateName, params, locale, tos, ccs, bccs,
-                    attachments));
-        }
+		if (totalRecipients <= chunkSize) {
+			if (LOG.isDebugEnabled()) {
+				LOG.debug("Total recipients is less than the size at which recipients "
+						+ "must be separated out");
+			}
 
-        return preparators;
-    }
+			preparators.add(messagePreparatorFactory.getInstance(templateName, params, locale, tos,
+					ccs, bccs, attachments));
+		} else {
+			if (LOG.isInfoEnabled()) {
+				LOG.info("Total recipients is [" + totalRecipients
+						+ "] which exceeds the chunking size [" + chunkSize
+						+ "]. Splitting emails to ensure no SMTP errors");
+			}
 
-    /**
-     * Counts total number of recipients
-     *
-     * @param locale
-     *            JAVADOC.
-     * @param tos
-     *            JAVADOC.
-     * @param ccs
-     *            JAVADOC.
-     * @param bccs
-     *            JAVADOC.
-     * @param csEmail
-     *            JAVADOC.
-     *
-     * @return count.
-     */
-    protected int getTotal(Locale locale, Collection<?> tos, Collection<?> ccs, Collection<?> bccs) {
-        int totalRecipients = 0;
+			preparators.addAll(
+					chunkPreparators(templateName, params, locale, tos, ccs, bccs, attachments));
+		}
 
-        int toSize = getSize(tos);
-        int ccSize = getSize(ccs);
-        int bccSize = getSize(bccs);
+		return preparators;
+	}
 
-        totalRecipients += toSize;
-        totalRecipients += ccSize;
-        totalRecipients += bccSize;
+	/**
+	 * Counts total number of recipients
+	 *
+	 * @param locale JAVADOC.
+	 * @param tos JAVADOC.
+	 * @param ccs JAVADOC.
+	 * @param bccs JAVADOC.
+	 * @param csEmail JAVADOC.
+	 *
+	 * @return count.
+	 */
+	protected int getTotal(Locale locale, Collection<?> tos, Collection<?> ccs,
+			Collection<?> bccs) {
+		int totalRecipients = 0;
 
-        return totalRecipients;
-    }
+		int toSize = getSize(tos);
+		int ccSize = getSize(ccs);
+		int bccSize = getSize(bccs);
 
-    private int getSize(Collection<?> coll) {
-        if (coll == null) {
-            return 0;
-        }
+		totalRecipients += toSize;
+		totalRecipients += ccSize;
+		totalRecipients += bccSize;
 
-        return coll.size();
-    }
+		return totalRecipients;
+	}
 
-    private <T extends EmailUser> List<List<?extends EmailUser>> chunkObjects(
-        Collection<T> objColl, int chunkSize) {
-        if (CollectionUtils.isEmpty(objColl)) {
-            return Collections.emptyList();
-        }
+	private int getSize(Collection<?> coll) {
+		if (coll == null) {
+			return 0;
+		}
 
-        List<T> objList = new ArrayList<T>(objColl);
+		return coll.size();
+	}
 
-        if (objColl.size() < chunkSize) {
-            List<List<?extends EmailUser>> ret = new ArrayList<List<?extends EmailUser>>();
+	private <T extends EmailUser> List<List<? extends EmailUser>> chunkObjects(
+			Collection<T> objColl, int chunkSize) {
+		if (CollectionUtils.isEmpty(objColl)) {
+			return Collections.emptyList();
+		}
 
-            ret.add(objList);
+		List<T> objList = new ArrayList<T>(objColl);
 
-            return ret;
-        }
+		if (objColl.size() < chunkSize) {
+			List<List<? extends EmailUser>> ret = new ArrayList<List<? extends EmailUser>>();
 
-        // ok chunking
-        int noOfChunks = countChunks(objColl.size(), chunkSize);
+			ret.add(objList);
 
-        // convert to List so we can subList it
+			return ret;
+		}
 
-        // calculate the end index (which is just the size)
-        int objListEndIndex = objColl.size();
+		// ok chunking
+		int noOfChunks = countChunks(objColl.size(), chunkSize);
 
-        // return value
-        List<List<?extends EmailUser>> ret = new ArrayList<List<?extends EmailUser>>();
+		// convert to List so we can subList it
 
-        // best illustrated by example, say noOfChunks = 5, chunkSize = 60
-        for (int i = 0; i < noOfChunks; i++) {
-            // so 0 for first iteration, 60 for second, etc, etc
-            int startPoint = chunkSize * i;
+		// calculate the end index (which is just the size)
+		int objListEndIndex = objColl.size();
 
-            if (startPoint > objListEndIndex) {
-                break;
-            }
+		// return value
+		List<List<? extends EmailUser>> ret = new ArrayList<List<? extends EmailUser>>();
 
-            // so ((0+1)*60 )- 1 for second, ie. 59
-            int endPoint = ((i + 1) * chunkSize);
+		// best illustrated by example, say noOfChunks = 5, chunkSize = 60
+		for (int i = 0; i < noOfChunks; i++) {
+			// so 0 for first iteration, 60 for second, etc, etc
+			int startPoint = chunkSize * i;
 
-            // if endPoint is greater than the actual number of objects we will
-            // get
-            // an ArrayIndexOutOfBoundsException from sublist, so we have to
-            // manage it
-            if (endPoint > objListEndIndex) {
-                ret.add(new ArrayList<T>(objList.subList(startPoint, objListEndIndex)));
+			if (startPoint > objListEndIndex) {
+				break;
+			}
 
-                break;
-            }
+			// so ((0+1)*60 )- 1 for second, ie. 59
+			int endPoint = ((i + 1) * chunkSize);
 
-            ret.add(new ArrayList<T>(objList.subList(startPoint, endPoint)));
-        }
+			// if endPoint is greater than the actual number of objects we will
+			// get
+			// an ArrayIndexOutOfBoundsException from sublist, so we have to
+			// manage it
+			if (endPoint > objListEndIndex) {
+				ret.add(new ArrayList<T>(objList.subList(startPoint, objListEndIndex)));
 
-        return ret;
-    }
+				break;
+			}
 
-    private Set<MimeMessagePreparator> chunkPreparators(String templateName,
-        Map<String, Object> params, Locale locale, Collection<?extends EmailUser> tos,
-        Collection<?extends EmailUser> ccs, Collection<?extends EmailUser> bccs,
-        Collection<DataSource> attachments) {
-        Set<MimeMessagePreparator> ret = new HashSet<MimeMessagePreparator>();
+			ret.add(new ArrayList<T>(objList.subList(startPoint, endPoint)));
+		}
 
-        // convert all 4 to lists
-        List<List<?extends EmailUser>> chunkedTos = chunkObjects(tos, chunkSize);
+		return ret;
+	}
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Split To recipients into [" + chunkedTos.size() + "] blocks");
-        }
+	private Set<MimeMessagePreparator> chunkPreparators(String templateName,
+			Map<String, String> params, Locale locale, Collection<? extends EmailUser> tos,
+			Collection<? extends EmailUser> ccs, Collection<? extends EmailUser> bccs,
+			Collection<DataSource> attachments) {
+		Set<MimeMessagePreparator> ret = new HashSet<MimeMessagePreparator>();
 
-        List<List<?extends EmailUser>> chunkedCcs = chunkObjects(ccs, chunkSize);
+		// convert all 4 to lists
+		List<List<? extends EmailUser>> chunkedTos = chunkObjects(tos, chunkSize);
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Split Cc recipients into [" + chunkedCcs.size() + "] blocks");
-        }
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Split To recipients into [" + chunkedTos.size() + "] blocks");
+		}
 
-        List<List<?extends EmailUser>> chunkedBccs = chunkObjects(bccs, chunkSize);
+		List<List<? extends EmailUser>> chunkedCcs = chunkObjects(ccs, chunkSize);
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Split Bcc recipients into [" + chunkedBccs.size() + "] blocks");
-        }
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Split Cc recipients into [" + chunkedCcs.size() + "] blocks");
+		}
 
-        for (List<?extends EmailUser> chunk : chunkedTos) {
-            ret.add(messagePreparatorFactory.getInstance(templateName, params, locale, chunk, null,
-                    null, attachments));
-        }
+		List<List<? extends EmailUser>> chunkedBccs = chunkObjects(bccs, chunkSize);
 
-        for (List<?extends EmailUser> chunk : chunkedCcs) {
-            ret.add(messagePreparatorFactory.getInstance(templateName, params, locale, null, chunk,
-                    null, attachments));
-        }
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Split Bcc recipients into [" + chunkedBccs.size() + "] blocks");
+		}
 
-        for (List<?extends EmailUser> chunk : chunkedBccs) {
-            ret.add(messagePreparatorFactory.getInstance(templateName, params, locale, null, null,
-                    chunk, attachments));
-        }
+		for (List<? extends EmailUser> chunk : chunkedTos) {
+			ret.add(messagePreparatorFactory.getInstance(templateName, params, locale, chunk, null,
+					null, attachments));
+		}
 
-        return ret;
-    }
+		for (List<? extends EmailUser> chunk : chunkedCcs) {
+			ret.add(messagePreparatorFactory.getInstance(templateName, params, locale, null, chunk,
+					null, attachments));
+		}
 
-    private <T> int countChunks(int total, int chunkSize) {
-        int intNoOfChunks = (total / chunkSize) + (((total % chunkSize) > 0) ? 1 : 0);
+		for (List<? extends EmailUser> chunk : chunkedBccs) {
+			ret.add(messagePreparatorFactory.getInstance(templateName, params, locale, null, null,
+					chunk, attachments));
+		}
 
-        return intNoOfChunks;
-    }
+		return ret;
+	}
+
+	private <T> int countChunks(int total, int chunkSize) {
+		int intNoOfChunks = (total / chunkSize) + (((total % chunkSize) > 0) ? 1 : 0);
+
+		return intNoOfChunks;
+	}
 }

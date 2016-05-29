@@ -37,7 +37,7 @@ public class SimpleIntegrationTest {
 		File file = new File(classLoader.getResource("templates/Test.ftl").getFile());
 		api.createTemplate("test", file, null);
 		
-		api.getTemplate("test", null);
+		System.err.println(api.getTemplate("test", null));
 	}
 
 }
