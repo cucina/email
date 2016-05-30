@@ -5,4 +5,4 @@
  * @author vlevine
  *
  */
-package org.cucina.email;
+package org.cucina.email.api;

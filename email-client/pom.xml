@@ -104,7 +104,7 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.jaxrs</groupId>
 			<artifactId>jackson-jaxrs-json-provider</artifactId>
-			</dependency>
+		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-joda</artifactId>
@@ -120,17 +120,36 @@
 			<artifactId>migbase64</artifactId>
 			<version>2.2</version>
 		</dependency>
-				<!-- http://mvnrepository.com/artifact/de.flapdoodle.embed/de.flapdoodle.embed.mongo -->
+		<!-- http://mvnrepository.com/artifact/de.flapdoodle.embed/de.flapdoodle.embed.mongo -->
 		<dependency>
 			<groupId>de.flapdoodle.embed</groupId>
 			<artifactId>de.flapdoodle.embed.mongo</artifactId>
-			</dependency>
-		
+		</dependency>
+
 		<dependency>
 			<groupId>cucina</groupId>
 			<artifactId>email-server</artifactId>
 			<scope>test</scope>
 			<version>0.1.1</version>
 		</dependency>
+		<dependency>
+			<groupId>info.cukes</groupId>
+			<artifactId>cucumber-junit</artifactId>
+			<version>1.2.4</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- http://mvnrepository.com/artifact/info.cukes/cucumber-java -->
+		<dependency>
+			<groupId>info.cukes</groupId>
+			<artifactId>cucumber-java</artifactId>
+			<version>1.2.4</version>
+		</dependency>
+		<!-- http://mvnrepository.com/artifact/info.cukes/cucumber-spring -->
+		<dependency>
+			<groupId>info.cukes</groupId>
+			<artifactId>cucumber-spring</artifactId>
+			<version>1.2.4</version>
+		</dependency>
+
 	</dependencies>
 </project>
