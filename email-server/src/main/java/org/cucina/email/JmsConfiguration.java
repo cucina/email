@@ -28,75 +28,72 @@ import org.cucina.email.model.EmailDescriptor;
 @EnableJms
 public class JmsConfiguration {
 	private static final Logger LOG = LoggerFactory.getLogger(JmsConfiguration.class);
-    @Autowired
-    private Environment environment;
-    
-    /**
-     * JAVADOC Method Level Comments
-     *
-     * @return JAVADOC.
-     */
-    @Bean
-    public DefaultJmsListenerContainerFactory myJmsListenerContainerFactory(
-        ConnectionFactory connectionFactory, ObjectMapper objectMapper) {
-        DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
 
-        factory.setDestinationResolver(destinationResolver());
-        factory.setConcurrency("5");
-        factory.setConnectionFactory(connectionFactory);
-        factory.setMessageConverter(messageConverter(objectMapper));
+	@Autowired
+	private Environment environment;
 
-        return factory;
-    }
+	/**
+	 * JAVADOC Method Level Comments
+	 *
+	 * @return JAVADOC.
+	 */
+	@Bean
+	public DefaultJmsListenerContainerFactory myJmsListenerContainerFactory(
+			ConnectionFactory connectionFactory, ObjectMapper objectMapper) {
+		DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
 
-    /**
-     * JAVADOC Method Level Comments
-     *
-     * @return JAVADOC.
-     */
-    private DestinationResolver destinationResolver() {
-        return new DestinationResolver() {
-                private DestinationResolver dynamicDestinationResolver = new DynamicDestinationResolver();
+		factory.setDestinationResolver(destinationResolver());
+		factory.setConcurrency("5");
+		factory.setConnectionFactory(connectionFactory);
+		factory.setMessageConverter(messageConverter(objectMapper));
 
-                @Override
-                public Destination resolveDestinationName(Session session, String destinationName,
-                    boolean pubSubDomain)
-                    throws JMSException {
-                    String dname = environment.getProperty("jms.destination." + destinationName,
-                            destinationName);
+		return factory;
+	}
 
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("Resolved destination '" + destinationName + "' to '" + dname +
-                            "'");
-                    }
+	/**
+	 * JAVADOC Method Level Comments
+	 *
+	 * @return JAVADOC.
+	 */
+	private DestinationResolver destinationResolver() {
+		return new DestinationResolver() {
+			private DestinationResolver dynamicDestinationResolver = new DynamicDestinationResolver();
 
-                    return dynamicDestinationResolver.resolveDestinationName(session, dname,
-                        pubSubDomain);
-                }
-            };
-    }
+			@Override
+			public Destination resolveDestinationName(Session session, String destinationName,
+					boolean pubSubDomain) throws JMSException {
+				String dname = environment.getProperty("jms.destination." + destinationName,
+						destinationName);
 
-    private MessageConverter messageConverter(final ObjectMapper objectMapper) {
-        return new MessageConverter() {
-                @Override
-                public Message toMessage(Object object, Session session)
-                    throws JMSException, MessageConversionException {
-                    // Unused yet
-                    return null;
-                }
+				LOG.debug("Resolved destination '{}' to '{}'", destinationName, dname);
 
-                @Override
-                public Object fromMessage(Message message)
-                    throws JMSException, MessageConversionException {
-                    String body = ((TextMessage) message).getText();
+				return dynamicDestinationResolver.resolveDestinationName(session, dname,
+						pubSubDomain);
+			}
+		};
+	}
 
-                    try {
-                        return objectMapper.readValue(body, EmailDescriptor.class);
-                    } catch (Exception e) {
-                        LOG.error("Oops", e);
-                        throw new MessageConversionException("Failed to convert", e);
-                    }
-                }
-            };
-    }
+	private MessageConverter messageConverter(final ObjectMapper objectMapper) {
+		return new MessageConverter() {
+			@Override
+			public Message toMessage(Object object, Session session)
+					throws JMSException, MessageConversionException {
+				// Unused yet
+				return null;
+			}
+
+			@Override
+			public Object fromMessage(Message message)
+					throws JMSException, MessageConversionException {
+				String body = ((TextMessage) message).getText();
+
+				try {
+					return objectMapper.readValue(body, EmailDescriptor.class);
+				} catch (Exception e) {
+					LOG.error("Oops", e);
+					throw new MessageConversionException("Failed to convert", e);
+				}
+			}
+		};
+	}
 }
