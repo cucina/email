@@ -63,8 +63,9 @@ paths:
       summary: Send email
       operationId: sendEmail
       parameters:
-      - name: emailDescriptor
+      - name: body
         in: body
+        required: true
         schema:
           $ref: '#/definitions/EmailDescriptor'
       responses:

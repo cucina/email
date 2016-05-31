@@ -2,6 +2,8 @@ package org.cucina.email.service;
 
 import java.util.Locale;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+
 
 class SimpleEmailUser
     implements EmailUser {
@@ -57,5 +59,10 @@ class SimpleEmailUser
     @Override
     public String getUsername() {
         return null;
+    }
+    
+    @Override
+    public String toString() {
+    	return ToStringBuilder.reflectionToString(this);
     }
 }

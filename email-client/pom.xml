@@ -150,6 +150,12 @@
 			<artifactId>cucumber-spring</artifactId>
 			<version>1.2.4</version>
 		</dependency>
+		<!-- http://mvnrepository.com/artifact/com.icegreen/greenmail -->
+		<dependency>
+			<groupId>com.icegreen</groupId>
+			<artifactId>greenmail</artifactId>
+			<version>1.5.0</version>
+		</dependency>
 
 	</dependencies>
 </project>

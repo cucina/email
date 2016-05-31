@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import org.cucina.email.api.SendApi;
 import org.cucina.email.model.EmailDescriptor;
@@ -17,7 +18,8 @@ public class SendApiImpl implements SendApi {
 	private EmailPreprocessor emailPreprocessor;
 
 	@Override
-	public Callable<ResponseEntity<Void>> sendEmail(EmailDescriptor emailDescriptor) {
+	public Callable<ResponseEntity<Void>> sendEmail(@RequestBody EmailDescriptor emailDescriptor) {
+		System.err.println(emailDescriptor);
 		emailPreprocessor.sendEmail(emailDescriptor);
 		return () -> new ResponseEntity<Void>(HttpStatus.ACCEPTED);
 	}

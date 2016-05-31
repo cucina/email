@@ -1,5 +1,5 @@
- Subject: A message from Sprite
-from:sprite@cucina.org
+Subject: A message from Cucina
+from: cucina@cucina.org
 <html>
 	<head>English version</head>
 	<body>
