@@ -45,6 +45,8 @@ public class SimpleSendDefs extends AbstractDefs {
 
 	@Then("^I should read the same email$")
 	public void i_should_read_the_same_email() throws Throwable {
+		// need to wait for the message to appear in mailbox
+		Thread.sleep(500);
 		MimeMessage[] messages = TemplateTest.greenMail.getReceivedMessages();
 		assertNotNull("Messages are null", messages);
 		assertTrue("Messages are empty", messages.length > 0);

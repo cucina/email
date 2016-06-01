@@ -18,6 +18,8 @@ import org.springframework.stereotype.Component;
 import org.cucina.email.model.EmailDescriptor;
 import org.cucina.email.model.NameValuePair;
 
+import reactor.bus.Event;
+
 /**
  * Common handling functionality as in building request from @see EmailDto
  *
@@ -30,12 +32,16 @@ public class EmailPreprocessorImpl implements EmailPreprocessor {
 	@Autowired
 	private EmailService emailService;
 
+	@Override
+	public void accept(Event<EmailDescriptor> event) {
+		sendEmail(event.getData());
+	}
+
 	/**
 	 * Builds request to emailService.
 	 *
 	 * @param emailDescriptor JAVADOC.
 	 */
-	// TODO refactor to use queue (Akka or otherwise) as a comm to emailService
 	@Override
 	public void sendEmail(EmailDescriptor emailDescriptor) {
 		try {
@@ -43,18 +49,19 @@ public class EmailPreprocessorImpl implements EmailPreprocessor {
 					buildUsers(emailDescriptor.getTo(), emailDescriptor.getLocale()),
 					buildUsers(emailDescriptor.getCc(), emailDescriptor.getLocale()),
 					buildUsers(emailDescriptor.getBcc(), emailDescriptor.getLocale()),
-					emailDescriptor.getMessageKey(), collectionToMap(emailDescriptor.getParameters()), null);
+					emailDescriptor.getMessageKey(),
+					collectionToMap(emailDescriptor.getParameters()), null);
 		} catch (Exception e) {
 			LOG.error("Error sending email", e);
 		}
 	}
-	
+
 	private Map<String, String> collectionToMap(Collection<NameValuePair> nvps) {
 		Map<String, String> result = new HashMap<String, String>();
 		for (NameValuePair nameValuePair : nvps) {
 			result.put(nameValuePair.getName(), nameValuePair.getValue());
 		}
-		
+
 		return result;
 	}
 

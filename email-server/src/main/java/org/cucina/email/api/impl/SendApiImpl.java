@@ -12,15 +12,18 @@ import org.cucina.email.api.SendApi;
 import org.cucina.email.model.EmailDescriptor;
 import org.cucina.email.service.EmailPreprocessor;
 
+import reactor.bus.Event;
+import reactor.bus.EventBus;
+
 @Component
 public class SendApiImpl implements SendApi {
 	@Autowired
-	private EmailPreprocessor emailPreprocessor;
+	private EventBus eventBus;
 
 	@Override
 	public Callable<ResponseEntity<Void>> sendEmail(@RequestBody EmailDescriptor emailDescriptor) {
-		System.err.println(emailDescriptor);
-		emailPreprocessor.sendEmail(emailDescriptor);
+		eventBus.notify(EmailPreprocessor.ADDRESS, Event.wrap(emailDescriptor));
+
 		return () -> new ResponseEntity<Void>(HttpStatus.ACCEPTED);
 	}
 }
