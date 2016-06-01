@@ -11,7 +11,6 @@ import org.junit.Test;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
 
-
 /**
  * JAVADOC for Class Level
  *
@@ -19,37 +18,29 @@ import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
  * @version $Revision: $
  */
 public class MimeMessagePreparatorFactoryTest {
-    MimeMessagePreparatorFactory factory;
+	private MimeMessagePreparatorFactory factory;
 
-    /**
-     *
-     * @param emailService The emailService to set.
-     */
-    public void setEmailService(MimeMessagePreparatorFactory emailService) {
-        this.factory = emailService;
-    }
+	/**
+	 * JAVADOC Method Level Comments
+	 */
+	@Before
+	public void onsetup() {
+		FreeMarkerConfigurationFactoryBean configurationBean = new FreeMarkerConfigurationFactoryBean();
 
-    /**
-     * JAVADOC Method Level Comments
-     */
-    @Before
-    public void onsetup() {
-        FreeMarkerConfigurationFactoryBean configurationBean = new FreeMarkerConfigurationFactoryBean();
+		configurationBean.setTemplateLoaderPath("classpath:email/");
 
-        configurationBean.setTemplateLoaderPath("classpath:email/");
+		factory = new MimeMessagePreparatorFactory();
+		factory.setConfiguration(configurationBean.getObject());
+	}
 
-        factory = new MimeMessagePreparatorFactory();
-        factory.setConfiguration(configurationBean.getObject());
-    }
+	/**
+	 * JAVADOC.
+	 */
+	@Test
+	public void testSunnyDay() {
+		MimeMessagePreparator preparator = factory.getInstance("TemplateReject", null, Locale.UK,
+				null, null, null);
 
-    /**
-     * JAVADOC.
-     */
-    @Test
-    public void testSunnyDay() {
-        MimeMessagePreparator preparator = factory.getInstance("TemplateReject", null, Locale.UK,
-                null, null, null, null);
-
-        assertNotNull(preparator);
-    }
+		assertNotNull(preparator);
+	}
 }

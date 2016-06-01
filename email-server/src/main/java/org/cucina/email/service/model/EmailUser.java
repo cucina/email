@@ -1,4 +1,4 @@
-package org.cucina.email.service;
+package org.cucina.email.service.model;
 
 import java.util.Locale;
 

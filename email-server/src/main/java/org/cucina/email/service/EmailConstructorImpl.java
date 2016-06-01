@@ -7,8 +7,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.activation.DataSource;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -18,6 +16,8 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
+
+import org.cucina.email.service.model.EmailUser;
 
 /**
  * JAVADOC.
@@ -50,9 +50,9 @@ public class EmailConstructorImpl implements EmailConstructor {
 	 * @return JAVADOC.
 	 */
 	@Transactional
-	public MimeMessagePreparator[] prepareMessages(String messageKey, Collection<EmailUser> toUsers,
-			Collection<EmailUser> ccUsers, Collection<EmailUser> bccUsers,
-			Map<String, String> parameters, Collection<DataSource> attachments) {
+	public Collection<MimeMessagePreparator> prepareMessages(String messageKey,
+			Collection<EmailUser> toUsers, Collection<EmailUser> ccUsers,
+			Collection<EmailUser> bccUsers, Map<String, String> parameters) {
 		Assert.notNull(messageKey, "messageKey is null");
 
 		Collection<EmailUser> filteredToUsers = filterDodgyUsers(toUsers);
@@ -96,10 +96,10 @@ public class EmailConstructorImpl implements EmailConstructor {
 			Collection<EmailUser> bccs = localeBccs.get(locale);
 
 			preparators.addAll(mailMessageChunker.getPreparators(messageKey, parameters, locale,
-					tos, ccs, bccs, attachments));
+					tos, ccs, bccs));
 		}
 
-		return preparators.toArray(new MimeMessagePreparator[preparators.size()]);
+		return preparators;
 	}
 
 	private Collection<EmailUser> filterDodgyUsers(Collection<EmailUser> users) {

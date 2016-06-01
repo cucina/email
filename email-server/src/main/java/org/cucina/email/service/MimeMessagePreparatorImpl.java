@@ -25,6 +25,8 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.util.Assert;
 
+import org.cucina.email.service.model.EmailUser;
+
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
 

@@ -3,10 +3,9 @@ package org.cucina.email.service;
 import java.util.Collection;
 import java.util.Map;
 
-import javax.activation.DataSource;
-
 import org.springframework.mail.javamail.MimeMessagePreparator;
 
+import org.cucina.email.service.model.EmailUser;
 
 /**
  * Creates MessagePreparators for each locale found in the list of users.
@@ -15,15 +14,14 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
  * @version $Revision: 1.1 $
  */
 public interface EmailConstructor {
-    /**
-    * JAVADOC.
-    *
-    * @param descriptor JAVADOC.
-    *
-    * @return JAVADOC.
-    */
-    public MimeMessagePreparator[] prepareMessages(String messageKey,
-        Collection<EmailUser> toUsers, Collection<EmailUser> ccUsers,
-        Collection<EmailUser> bccUsers, Map<String, String> parameters,
-        Collection<DataSource> attachments);
+	/**
+	 * JAVADOC.
+	 *
+	 * @param descriptor JAVADOC.
+	 *
+	 * @return JAVADOC.
+	 */
+	public Collection<MimeMessagePreparator> prepareMessages(String messageKey,
+			Collection<EmailUser> toUsers, Collection<EmailUser> ccUsers,
+			Collection<EmailUser> bccUsers, Map<String, String> parameters);
 }

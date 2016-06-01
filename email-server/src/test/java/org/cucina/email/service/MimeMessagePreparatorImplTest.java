@@ -20,8 +20,9 @@ import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
 
 import freemarker.template.Configuration;
 
-import org.cucina.email.service.EmailUser;
 import org.cucina.email.service.MimeMessagePreparatorImpl;
+import org.cucina.email.service.model.EmailUser;
+
 import static org.junit.Assert.fail;
 
 import org.junit.Before;

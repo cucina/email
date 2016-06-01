@@ -13,12 +13,17 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import org.cucina.email.model.EmailDescriptor;
 import org.cucina.email.model.NameValuePair;
+import org.cucina.email.service.model.EmailUser;
+import org.cucina.email.service.model.SimpleEmailUser;
 
 import reactor.bus.Event;
+import reactor.bus.EventBus;
 
 /**
  * Common handling functionality as in building request from @see EmailDto
@@ -30,30 +35,28 @@ public class EmailPreprocessorImpl implements EmailPreprocessor {
 	private static final Logger LOG = LoggerFactory.getLogger(EmailPreprocessorImpl.class);
 
 	@Autowired
-	private EmailService emailService;
+	private PreparatorEmailService preparatorService;
 
-	@Override
-	public void accept(Event<EmailDescriptor> event) {
-		sendEmail(event.getData());
-	}
+	@Autowired
+	private EventBus eventBus;
 
 	/**
-	 * Builds request to emailService.
+	 * Builds request to emailService and sends result to eventBus
 	 *
 	 * @param emailDescriptor JAVADOC.
 	 */
+	@Async
 	@Override
 	public void sendEmail(EmailDescriptor emailDescriptor) {
-		try {
-			emailService.sendMessages(emailDescriptor.getSubject(), emailDescriptor.getFrom(),
-					buildUsers(emailDescriptor.getTo(), emailDescriptor.getLocale()),
-					buildUsers(emailDescriptor.getCc(), emailDescriptor.getLocale()),
-					buildUsers(emailDescriptor.getBcc(), emailDescriptor.getLocale()),
-					emailDescriptor.getMessageKey(),
-					collectionToMap(emailDescriptor.getParameters()), null);
-		} catch (Exception e) {
-			LOG.error("Error sending email", e);
-		}
+		MimeMessagePreparator[] preparators = preparatorService.prepareMessages(
+				emailDescriptor.getSubject(), emailDescriptor.getFrom(),
+				buildUsers(emailDescriptor.getTo(), emailDescriptor.getLocale()),
+				buildUsers(emailDescriptor.getCc(), emailDescriptor.getLocale()),
+				buildUsers(emailDescriptor.getBcc(), emailDescriptor.getLocale()),
+				emailDescriptor.getMessageKey(), collectionToMap(emailDescriptor.getParameters()),
+				null);
+
+		eventBus.notify(AsyncEventSender.class, Event.wrap(preparators));
 	}
 
 	private Map<String, String> collectionToMap(Collection<NameValuePair> nvps) {

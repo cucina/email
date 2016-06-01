@@ -5,14 +5,13 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.activation.DataSource;
-
 import org.apache.commons.collections.MapUtils;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Required;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Component;
+
+import org.cucina.email.service.model.EmailUser;
 
 import freemarker.template.Configuration;
 
@@ -44,44 +43,6 @@ public class MimeMessagePreparatorFactory {
 	}
 
 	/**
-	 * JAVADOC Method Level Comments
-	 *
-	 * @param templateName JAVADOC.
-	 * @param params JAVADOC.
-	 * @param locale JAVADOC.
-	 * @param tos JAVADOC.
-	 * @param ccs JAVADOC.
-	 * @param bccs JAVADOC.
-	 *
-	 * @return JAVADOC.
-	 */
-	public MimeMessagePreparator getInstance(String templateName, Map<String, String> params,
-			Locale locale, Collection<? extends EmailUser> tos, Collection<? extends EmailUser> ccs,
-			Collection<? extends EmailUser> bccs, Collection<DataSource> attachments) {
-		if (params == null) {
-			params = new HashMap<String, String>();
-		}
-
-		if (MapUtils.isNotEmpty(getStandardParams())) {
-			params.putAll(getStandardParams());
-		}
-
-		MimeMessagePreparatorImpl preparator = new MimeMessagePreparatorImpl();
-
-		preparator.setTemplateName(templateName);
-		preparator.setConfiguration(configuration);
-		preparator.setParams(params);
-		preparator.setLocale(locale);
-		preparator.setSuffix(suffix);
-		preparator.setTo(tos);
-		preparator.setCc(ccs);
-		preparator.setBcc(bccs);
-		preparator.setAttachments(attachments);
-
-		return preparator;
-	}
-
-	/**
 	 * JAVADOC.
 	 *
 	 * @param standardParams JAVADOC.
@@ -106,5 +67,42 @@ public class MimeMessagePreparatorFactory {
 	 */
 	public void setSuffix(String suffix) {
 		this.suffix = suffix;
+	}
+
+	/**
+	 * JAVADOC Method Level Comments
+	 *
+	 * @param templateName JAVADOC.
+	 * @param params JAVADOC.
+	 * @param locale JAVADOC.
+	 * @param tos JAVADOC.
+	 * @param ccs JAVADOC.
+	 * @param bccs JAVADOC.
+	 *
+	 * @return JAVADOC.
+	 */
+	public MimeMessagePreparator getInstance(String templateName, Map<String, String> params,
+			Locale locale, Collection<? extends EmailUser> tos, Collection<? extends EmailUser> ccs,
+			Collection<? extends EmailUser> bccs) {
+		if (params == null) {
+			params = new HashMap<String, String>();
+		}
+
+		if (MapUtils.isNotEmpty(getStandardParams())) {
+			params.putAll(getStandardParams());
+		}
+
+		MimeMessagePreparatorImpl preparator = new MimeMessagePreparatorImpl();
+
+		preparator.setTemplateName(templateName);
+		preparator.setConfiguration(configuration);
+		preparator.setParams(params);
+		preparator.setLocale(locale);
+		preparator.setSuffix(suffix);
+		preparator.setTo(tos);
+		preparator.setCc(ccs);
+		preparator.setBcc(bccs);
+
+		return preparator;
 	}
 }

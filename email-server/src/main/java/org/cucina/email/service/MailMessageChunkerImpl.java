@@ -9,16 +9,14 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.activation.DataSource;
-
 import org.apache.commons.collections.CollectionUtils;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Component;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.cucina.email.service.model.EmailUser;
 
 /**
  * Handles chunking of mail recipients to avoid issues with mail server
@@ -32,6 +30,7 @@ public class MailMessageChunkerImpl implements MailMessageChunker {
 	@Autowired
 	private MimeMessagePreparatorFactory messagePreparatorFactory;
 
+	// max number of email recipients on a single preparator
 	private int chunkSize = 100;
 
 	/**
@@ -67,8 +66,7 @@ public class MailMessageChunkerImpl implements MailMessageChunker {
 	 */
 	public Set<MimeMessagePreparator> getPreparators(String templateName,
 			Map<String, String> params, Locale locale, Collection<? extends EmailUser> tos,
-			Collection<? extends EmailUser> ccs, Collection<? extends EmailUser> bccs,
-			Collection<DataSource> attachments) {
+			Collection<? extends EmailUser> ccs, Collection<? extends EmailUser> bccs) {
 		Set<MimeMessagePreparator> preparators = new HashSet<MimeMessagePreparator>();
 		int totalRecipients = getTotal(locale, tos, ccs, bccs);
 
@@ -79,7 +77,7 @@ public class MailMessageChunkerImpl implements MailMessageChunker {
 			}
 
 			preparators.add(messagePreparatorFactory.getInstance(templateName, params, locale, tos,
-					ccs, bccs, attachments));
+					ccs, bccs));
 		} else {
 			if (LOG.isInfoEnabled()) {
 				LOG.info("Total recipients is [" + totalRecipients
@@ -87,8 +85,7 @@ public class MailMessageChunkerImpl implements MailMessageChunker {
 						+ "]. Splitting emails to ensure no SMTP errors");
 			}
 
-			preparators.addAll(
-					chunkPreparators(templateName, params, locale, tos, ccs, bccs, attachments));
+			preparators.addAll(chunkPreparators(templateName, params, locale, tos, ccs, bccs));
 		}
 
 		return preparators;
@@ -183,44 +180,39 @@ public class MailMessageChunkerImpl implements MailMessageChunker {
 		return ret;
 	}
 
+	// TODO refactor to have a single preparator having up to chunkSize
+	// recipients in total
 	private Set<MimeMessagePreparator> chunkPreparators(String templateName,
 			Map<String, String> params, Locale locale, Collection<? extends EmailUser> tos,
-			Collection<? extends EmailUser> ccs, Collection<? extends EmailUser> bccs,
-			Collection<DataSource> attachments) {
+			Collection<? extends EmailUser> ccs, Collection<? extends EmailUser> bccs) {
 		Set<MimeMessagePreparator> ret = new HashSet<MimeMessagePreparator>();
 
 		// convert all 4 to lists
 		List<List<? extends EmailUser>> chunkedTos = chunkObjects(tos, chunkSize);
 
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Split To recipients into [" + chunkedTos.size() + "] blocks");
-		}
+		LOG.debug("Split To recipients into [{}] blocks", chunkedTos.size());
 
 		List<List<? extends EmailUser>> chunkedCcs = chunkObjects(ccs, chunkSize);
 
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Split Cc recipients into [" + chunkedCcs.size() + "] blocks");
-		}
+		LOG.debug("Split Cc recipients into [{}] blocks", chunkedCcs.size());
 
 		List<List<? extends EmailUser>> chunkedBccs = chunkObjects(bccs, chunkSize);
 
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("Split Bcc recipients into [" + chunkedBccs.size() + "] blocks");
-		}
+		LOG.debug("Split Bcc recipients into [{}] blocks", chunkedBccs.size());
 
 		for (List<? extends EmailUser> chunk : chunkedTos) {
 			ret.add(messagePreparatorFactory.getInstance(templateName, params, locale, chunk, null,
-					null, attachments));
+					null));
 		}
 
 		for (List<? extends EmailUser> chunk : chunkedCcs) {
 			ret.add(messagePreparatorFactory.getInstance(templateName, params, locale, null, chunk,
-					null, attachments));
+					null));
 		}
 
 		for (List<? extends EmailUser> chunk : chunkedBccs) {
 			ret.add(messagePreparatorFactory.getInstance(templateName, params, locale, null, null,
-					chunk, attachments));
+					chunk));
 		}
 
 		return ret;

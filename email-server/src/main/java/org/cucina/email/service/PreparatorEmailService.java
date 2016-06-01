@@ -5,6 +5,10 @@ import java.util.Map;
 
 import javax.activation.DataSource;
 
+import org.springframework.mail.javamail.MimeMessagePreparator;
+
+import org.cucina.email.service.model.EmailUser;
+
 
 /**
  * JAVADOC.
@@ -12,7 +16,7 @@ import javax.activation.DataSource;
  * @author $author$
  * @version $Revision: 1.1 $
  */
-public interface EmailService {
+public interface PreparatorEmailService {
     /**
     * JAVADOC.
     *
@@ -20,7 +24,7 @@ public interface EmailService {
     *
     * @return JAVADOC.
     */
-    public void sendMessages(String from, String subject, Collection<EmailUser> toUsers,
+    public MimeMessagePreparator[] prepareMessages(String from, String subject, Collection<EmailUser> toUsers,
         Collection<EmailUser> ccUsers, Collection<EmailUser> bccUsers, String messageKey,
         Map<String, String> map, Collection<DataSource> attachments);
 }
