@@ -18,7 +18,6 @@ import org.cucina.email.api.TemplateApi;
 import org.cucina.email.model.Template;
 import org.cucina.email.repository.EmailTemplate;
 import org.cucina.email.repository.TemplateRepository;
-import org.cucina.email.service.MimeMessagePreparatorFactory;
 
 @Component
 public class TemplateApiImpl implements TemplateApi {
@@ -43,6 +42,11 @@ public class TemplateApiImpl implements TemplateApi {
 				throw new RuntimeException(e);
 			}
 
+			if (templateRepository.findByName(name) == null) {
+				// create default template as a catchall if a localised one is
+				// not found
+			}
+
 			et.setName(buildName(name, locale));
 			et.setLastModified(new Date());
 			templateRepository.save(et);
@@ -58,13 +62,11 @@ public class TemplateApiImpl implements TemplateApi {
 	public Callable<ResponseEntity<Template>> getTemplate(String name, String locale) {
 		Template et = templateRepository.findByName(buildName(name, locale));
 		// TODO handle not found
-		
-		
+
 		return () -> new ResponseEntity<>(et, HttpStatus.OK);
 	}
 
 	private String buildName(String name, String locale) {
-		return name + ((locale == null) ? "" : ("_" + locale.toString()))
-				+ MimeMessagePreparatorFactory.TEMPLATE_SUFFIX;
+		return name + ((locale == null) ? "" : ("_" + locale.toString()));
 	}
 }

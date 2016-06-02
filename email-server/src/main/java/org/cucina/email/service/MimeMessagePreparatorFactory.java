@@ -23,15 +23,10 @@ import freemarker.template.Configuration;
  */
 @Component
 public class MimeMessagePreparatorFactory {
-	/** ftl. */
-	public static final String TEMPLATE_SUFFIX = ".ftl";
-
 	private Configuration configuration;
 
 	// Injected parameter map containing standard info for the email
 	private Map<String, String> standardParams;
-
-	private String suffix = TEMPLATE_SUFFIX;
 
 	/**
 	 * @param configuration The configuration to set.
@@ -58,15 +53,6 @@ public class MimeMessagePreparatorFactory {
 	 */
 	public Map<String, String> getStandardParams() {
 		return standardParams;
-	}
-
-	/**
-	 * Set suffix
-	 *
-	 * @param suffix String
-	 */
-	public void setSuffix(String suffix) {
-		this.suffix = suffix;
 	}
 
 	/**
@@ -98,7 +84,6 @@ public class MimeMessagePreparatorFactory {
 		preparator.setConfiguration(configuration);
 		preparator.setParams(params);
 		preparator.setLocale(locale);
-		preparator.setSuffix(suffix);
 		preparator.setTo(tos);
 		preparator.setCc(ccs);
 		preparator.setBcc(bccs);

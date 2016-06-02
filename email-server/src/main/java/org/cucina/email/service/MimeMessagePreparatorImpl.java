@@ -60,8 +60,6 @@ public class MimeMessagePreparatorImpl implements MimeMessagePreparator {
 
 	private String subject;
 
-	private String suffix;
-
 	private String templateLocation;
 
 	private String templateName;
@@ -138,15 +136,6 @@ public class MimeMessagePreparatorImpl implements MimeMessagePreparator {
 	}
 
 	/**
-	 * Set suffix for template files
-	 *
-	 * @param suffix String
-	 */
-	public void setSuffix(String suffix) {
-		this.suffix = suffix;
-	}
-
-	/**
 	 * Set templateName
 	 *
 	 * @param templateName String
@@ -174,7 +163,6 @@ public class MimeMessagePreparatorImpl implements MimeMessagePreparator {
 		Assert.notNull(templateName, "templateName is null");
 		Assert.notNull(encoding, "encoding is null");
 		Assert.notNull(configuration, "configuration is null");
-		Assert.notNull(suffix, "suffix is null");
 		Assert.notNull(params, "params cannot be null");
 
 		if ((CollectionUtils.isEmpty(to) && CollectionUtils.isEmpty(cc)
@@ -291,14 +279,12 @@ public class MimeMessagePreparatorImpl implements MimeMessagePreparator {
 		Assert.notNull(messageKey, "messageKey is null");
 		Assert.notNull(locale, "locale is null");
 
-		String filename = messageKey + suffix;
-
-		LOG.debug("filename={}", filename);
+		LOG.debug("filename={}", messageKey);
 		LOG.debug("parameters for freemarker={}", parameters);
 
 		try {
 			return FreeMarkerTemplateUtils.processTemplateIntoString(
-					configuration.getTemplate(filename, locale, encoding), parameters);
+					configuration.getTemplate(messageKey, locale, encoding), parameters);
 		} catch (IOException e) {
 			LOG.warn("Got an IOexception", e);
 			throw new MailPreparationException(e);
