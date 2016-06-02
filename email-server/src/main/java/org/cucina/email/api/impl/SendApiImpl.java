@@ -19,6 +19,9 @@ public class SendApiImpl implements SendApi {
 
 	@Override
 	public Callable<ResponseEntity<Void>> sendEmail(@RequestBody EmailDescriptor emailDescriptor) {
+		//TODO check that the template exists
+		//emailDescriptor.getMessageKey()
+		
 		emailPreprocessor.sendEmail(emailDescriptor);
 
 		return () -> new ResponseEntity<Void>(HttpStatus.ACCEPTED);

@@ -1,11 +1,10 @@
 package org.cucina.email.service;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.LocaleUtils;
@@ -26,7 +25,7 @@ import reactor.bus.Event;
 import reactor.bus.EventBus;
 
 /**
- * Common handling functionality as in building request from @see EmailDto
+ * Common handling functionality as in building request from @see EmailDescriptor
  *
  * @author vlevine
  */
@@ -41,47 +40,49 @@ public class EmailPreprocessorImpl implements EmailPreprocessor {
 	private EventBus eventBus;
 
 	/**
-	 * Builds request to emailService and sends result to eventBus
+	 * Builds request in preparatorService and sends result to eventBus
 	 *
 	 * @param emailDescriptor JAVADOC.
 	 */
 	@Async
 	@Override
 	public void sendEmail(EmailDescriptor emailDescriptor) {
+		Locale locale = determineLocale(emailDescriptor.getLocale());
 		MimeMessagePreparator[] preparators = preparatorService.prepareMessages(
 				emailDescriptor.getSubject(), emailDescriptor.getFrom(),
-				buildUsers(emailDescriptor.getTo(), emailDescriptor.getLocale()),
-				buildUsers(emailDescriptor.getCc(), emailDescriptor.getLocale()),
-				buildUsers(emailDescriptor.getBcc(), emailDescriptor.getLocale()),
-				emailDescriptor.getMessageKey(), collectionToMap(emailDescriptor.getParameters()),
-				null);
+				buildUsers(emailDescriptor.getTo(), locale),
+				buildUsers(emailDescriptor.getCc(), locale),
+				buildUsers(emailDescriptor.getBcc(), locale), emailDescriptor.getMessageKey(),
+				collectionToMap(emailDescriptor.getParameters()), null);
 
 		eventBus.notify(AsyncEventSender.class, Event.wrap(preparators));
 	}
 
 	private Map<String, String> collectionToMap(Collection<NameValuePair> nvps) {
-		Map<String, String> result = new HashMap<String, String>();
-		for (NameValuePair nameValuePair : nvps) {
-			result.put(nameValuePair.getName(), nameValuePair.getValue());
-		}
-
-		return result;
+		return nvps.parallelStream()
+				.collect(Collectors.toMap(NameValuePair::getName, NameValuePair::getValue));
 	}
 
-	private Collection<EmailUser> buildUsers(Collection<String> addresses, String slocale) {
+	private Collection<EmailUser> buildUsers(Collection<String> addresses, Locale locale) {
 		if (CollectionUtils.isEmpty(addresses)) {
 			return Collections.emptyList();
 		}
 
-		Collection<EmailUser> users = new ArrayList<EmailUser>();
+		// TODO verify address format
+		Collection<EmailUser> users = addresses.parallelStream().filter(StringUtils::isNotEmpty)
+				.map(s -> new SimpleEmailUser(s.trim(), locale)).collect(Collectors.toList());
 
+		return users;
+	}
+
+	private Locale determineLocale(String slocale) {
 		Locale locale = null;
-
 		if (StringUtils.isNotEmpty(slocale)) {
 			try {
 				locale = LocaleUtils.toLocale(slocale);
 			} catch (Exception e) {
-				LOG.error("Oops", e);
+				LOG.warn("Invalid locale '" + slocale + "', will use server's default "
+						+ Locale.getDefault(), e);
 			}
 		}
 
@@ -89,14 +90,6 @@ public class EmailPreprocessorImpl implements EmailPreprocessor {
 			locale = Locale.getDefault();
 		}
 
-		for (String ass : addresses) {
-			if (StringUtils.isEmpty(ass)) {
-				continue;
-			}
-
-			users.add(new SimpleEmailUser(ass.trim(), locale));
-		}
-
-		return users;
+		return locale;
 	}
 }

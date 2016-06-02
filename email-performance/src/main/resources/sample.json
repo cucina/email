@@ -1,0 +1,21 @@
+{
+  "bcc": [
+    "string"
+  ],
+  "cc": [
+    "string"
+  ],
+  "from": "string",
+  "locale": "string",
+  "messageKey": "string",
+  "parameters": [
+    {
+      "name": "string",
+      "value": "string"
+    }
+  ],
+  "subject": "string",
+  "to": [
+    "string"
+  ]
+}
