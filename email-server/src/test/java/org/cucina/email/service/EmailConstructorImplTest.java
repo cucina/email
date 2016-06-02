@@ -32,7 +32,7 @@ import org.mockito.MockitoAnnotations;
  * @author $author$
  * @version $Revision$
  */
-public class ConstructEmailServiceImplTest {
+public class EmailConstructorImplTest {
 	private EmailConstructorImpl emailService;
 
 	private EmailUser activeWithEmailFrench;
